@@ -6,7 +6,7 @@ from scipy.stats import t
 
 import pandas as pd
 
-def write_file(path,x,y,y1):
+def write_file(path,x,y,y1): #сохранение в файл
 
     dict = {'x': x,
             'y': y,
@@ -16,16 +16,16 @@ def write_file(path,x,y,y1):
     dataframe = pd.DataFrame(dict)
     dataframe.to_csv(path, index=False)  # при сохранении файла отбросить индекс
 
-def read_file(path):
+def read_file(path): #чтение из файла
     dataframe = pd.read_csv(path)
     x = np.array(dataframe.x.to_list())
     y = np.array(dataframe.y.to_list())
     y1 = np.array(dataframe.y1.to_list())
     return x, y, y1
 
-def genDate(f,x,a,b,c=0): #портим данные
+def genDate(f,x,a,b,c=0): #портим данные (на вход номер функции и передаваемые параметры)
     y = np.empty(len(x))
-    match f:
+    match f: #в зависимости от номера создаем теоретические(правильные) данные
         case 1:
             y = a * x + b
         case 2:
@@ -33,7 +33,7 @@ def genDate(f,x,a,b,c=0): #портим данные
         case 3:
             y = a * np.log(x) + b
     y1 = np.empty(len(x))
-    for i in range(len(x)):
+    for i in range(len(x)): #портим данные
         y1[i] = y[i] + 4 * random()-2
     return y, y1
 
@@ -58,7 +58,7 @@ def line(x, y1): #линейная регрессия
     print(f'a1={a1}\nb1={b1}\n')
     return a1,b1,y2
 
-def parabola(x,y1):
+def parabola(x,y1): #параболла
     x4 = x ** 4
     x3 = x ** 3
     x2 = x ** 2
@@ -98,16 +98,16 @@ def log(x,y1): #логариф
 
 def hallway(x,n,s,y2): # коридор
     Sost = math.sqrt(s / (n - 2))
-    x_mean = np.mean(x)
-    sigma = np.var(x)
-    ta = t.ppf(0.9, df=n - 2)
+    x_mean = np.mean(x) #среднее
+    sigma = np.var(x) #дисперсия
+    ta = t.ppf(0.9, df=n - 2) #значение распределения Стьюдента
     print(ta)
-    yk1 = np.empty(n)
-    yk2 = np.empty(n)
+    yk1 = np.empty(n) #нижняя граница
+    yk2 = np.empty(n) #верхняя граница
     for i in range(n):
-        m = Sost * math.sqrt(1+ (1 / n) + ((x[i] - x_mean) ** 2) / (n * sigma))
-        yk1[i] = y2[i] - ta * m
-        yk2[i] = y2[i] + ta * m
+        m = Sost * math.sqrt(1+ (1 / n) + ((x[i] - x_mean) ** 2) / (n * sigma)) #считаем m
+        yk1[i] = y2[i] - ta * m #нижняя граница
+        yk2[i] = y2[i] + ta * m #верхняя граница
     return yk1, yk2
 
 
